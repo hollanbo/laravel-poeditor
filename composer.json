@@ -1,0 +1,11 @@
+{
+    "name": "boroot/laravel-poeditor",
+    "description": "Edit your .po file from within your web interface",
+    "authors": [
+        {
+            "name": "Borut Hollan",
+            "email": "borut.hollan@gmail.com"
+        }
+    ],
+    "require": {}
+}
