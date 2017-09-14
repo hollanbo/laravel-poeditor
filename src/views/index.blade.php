@@ -14,9 +14,8 @@
         <style>
             html, body {
                 background-color: #fff;
-                color: #636b6f;
-                font-family: 'Raleway', sans-serif;
                 font-weight: 100;
+                font-size: 16px;
                 height: 100vh;
                 margin: 0;
             }
@@ -62,42 +61,25 @@
             .m-b-md {
                 margin-bottom: 30px;
             }
+
+            table {
+                width: 100%;
+            }
+
+            td {
+                padding: 4px;
+                text-align: center;
+            }
+
+            tr:nth-child(odd) {
+                background: grey;
+            }
+
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
-                    @endauth
-                </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    LaravelPoeditor {{ _i("Welcome") }}
-
-                    {{ _i("tits") }}
-
-                    {{ _i("balls") }}
-
-                    {{ _i("ass") }}
-
-                    {{ _i("cock") }}
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
-            </div>
+        <div>
+            @include('hollanboLaravelPoeditor::translate');
         </div>
     </body>
 </html>

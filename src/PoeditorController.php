@@ -7,9 +7,10 @@ use Carbon\Carbon;
 class PoeditorController extends Controller
 {
 
-    public function index()
+    public function index(PoeditorRepository $repo)
     {
-        return view('hollanboLaravelPoeditor::welcome');
+        $data = $repo->getData("sl_SI");
+        return view('hollanboLaravelPoeditor::index', $data);
     }
 
 }
