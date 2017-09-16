@@ -27,7 +27,6 @@ class PoeditorController extends Controller
 
     public function saveToFile(PoeditorRepository $repo) {
         $repo->saveToFile("sl_SI");
-        dd('ok');
         return redirect()->route('hollanbo.poeditor.index');
     }
 
