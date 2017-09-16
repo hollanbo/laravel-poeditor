@@ -5,6 +5,12 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+
         <title>Laravel</title>
 
         <!-- Fonts -->
@@ -75,11 +81,16 @@
                 background: grey;
             }
 
+            td > input {
+                width: 100%;
+            }
+
         </style>
     </head>
     <body>
         <div>
-            @include('hollanboLaravelPoeditor::translate');
+            @include('hollanboLaravelPoeditor::translate')
         </div>
+    <script src="/js/vendor/hollanboLaravelPoeditor/poeditor.js"></script>
     </body>
 </html>
