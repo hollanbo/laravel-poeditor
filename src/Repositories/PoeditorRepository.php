@@ -12,6 +12,7 @@ class PoeditorRepository {
         '#.' => 'extracted_comments',
         '#:' => 'source_reference',
         'msgid' => 'original',
+        'msgid_plural' => 'original_plural',
         'msgstr' => 'translation',
         'msgctxt' => 'context'
     ];
@@ -103,11 +104,22 @@ class PoeditorRepository {
     public function getStrings($line, $handle)
     {
         $string = [];
+        $type_tmp = '';
         do {
             $line = trim($line);
-            $type = array_get($this->types, strtok($line, " "), strtok($line, " "));
+            if (strpos($line, '"') === 0) {
+                $type = $type_tmp;
+            } else {
+                $type = array_get($this->types, strtok($line, " "), strtok($line, " "));
+                $type_tmp = $type;
+            }
+
             if (strpos($line, "#") !== 0) {
-                $string[$type][] = substr($line, ( strpos($line, "\"") + 1 ), -1);
+                if (!isset($string[$type])) {
+                    $string[$type] = "";
+                }
+
+                $string[$type] .= substr($line, ( strpos($line, '"') + 1 ), -1);
             } else {
                 $string[$type][] = $line;
             }
@@ -135,15 +147,41 @@ class PoeditorRepository {
             $line = trim($line);
             if (strpos($line, "\"") === 0) {
                 // Headers
-                $header = substr(strtok($line, ": "), 1);
-                $header_value = substr($line, ( strpos($line, ": ") + 2 ), -3);
-                $headers[$header] = $header_value;
-            } else {
+                $result = $this->parseHeaders($line, $handle);
+
+                $headers = array_merge($headers, $result['headers']);
+                $line = $result['line'];
+            }
+
+            if ($line !== "\n" ) {
                 $headers[] = $line;
+            } else {
+                break;
             }
         }
 
         return $headers;
+    }
+
+    public function parseHeaders($line, $handle)
+    {
+        $headers = [];
+        $headers_string = "";
+        do {
+            $headers_string .= trim($line);
+        } while (($line = fgets($handle)) !== false && strpos($line, "\"") === 0);
+
+        $headers_string = str_replace('""', '', substr($headers_string, 1, strlen($headers_string) - 4));
+
+        $headers_tmp = explode('\n', $headers_string);
+
+        foreach ($headers_tmp as $row) {
+            $header = substr(strtok($row, ": "), 0);
+            $header_value = substr($row, ( strpos($row, ": ") + 2 ));
+            $headers[$header] = $header_value;
+        }
+
+        return ['line' => $line, 'headers' => $headers];
     }
 
     /**
@@ -159,7 +197,7 @@ class PoeditorRepository {
      *
      * @version 1.0
      */
-    public function saveTranslation($locale, $key, $translation)
+    public function saveTranslation($locale, $key, $translation, $plural)
     {
         $cache_key = $locale . "_translations";
 
@@ -168,7 +206,13 @@ class PoeditorRepository {
         }
 
         $data = Cache::get($cache_key);
-        $data['strings'][$key]['translation'] = [$translation];
+
+        if (is_null($plural)) {
+            $data['strings'][$key]['translation'] = $translation;
+        } else {
+            $msgstr = "msgstr[$plural]";
+            $data['strings'][$key][$msgstr] = $translation;
+        }
         Cache::put($cache_key, $data, 600);
 
         return ['status' => 'ok'];
@@ -210,10 +254,10 @@ class PoeditorRepository {
         }
     }
 
-    public function writeStrings($filename, $strings)
+    public function writeStrings($filename, $strings_array)
     {
         $types = array_flip($this->types);
-        foreach ($strings as $string_data) {
+        foreach ($strings_array as $string_data) {
             file_put_contents($filename, "\n", FILE_APPEND);
 
             foreach ($string_data as $key => $strings) {
@@ -231,13 +275,8 @@ class PoeditorRepository {
         }
     }
 
-    public function getMsgStrings($strings)
+    public function getMsgStrings($string)
     {
-        $line = '';
-        foreach ($strings as $string) {
-            $line .= '"' . $string . "\"\n";
-        }
-
-        return $line;
+        return '"' . $string . "\"\n";
     }
 }

@@ -73,8 +73,17 @@
             }
 
             td {
-                padding: 4px;
-                text-align: center;
+                text-align: left;
+                padding: 8px;
+                vertical-align: top;
+            }
+
+            td:first-child {
+                width: 33%;
+            }
+
+            td:second-child {
+                width: 67%
             }
 
             tr:nth-child(odd) {
@@ -82,7 +91,12 @@
             }
 
             td > input {
-                width: 100%;
+                width: 50%;
+                margin-bottom: 4px;
+            }
+
+            td > input:last-child() {
+                margin-bottom: 0;
             }
 
         </style>

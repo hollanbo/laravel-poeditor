@@ -6,10 +6,11 @@
 
     @foreach ($strings as $key => $string)
         <tr>
-            <td>{{ implode("<br>", $string['original']) }}</td>
-            <td>
-                <input type="text" class="poeditor-translation" name="{{ $key }}" value="{{ implode(" ", $string['translation']) }}">
-            </td>
+            @if (isset($string['original_plural']))
+                @include('hollanboLaravelPoeditor::plural')
+            @else
+                @include('hollanboLaravelPoeditor::singular')
+            @endif
         </tr>
     @endforeach
 </table>

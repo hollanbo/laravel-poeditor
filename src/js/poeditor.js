@@ -8,7 +8,8 @@
     var saveTranslation = function (e) {
         var data = {
             value: e.target.value,
-            key: e.target.name
+            key: e.target.name,
+            plural: e.target.dataset.plural || null
         };
 
         $.ajax({
