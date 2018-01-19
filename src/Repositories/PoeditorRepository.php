@@ -40,7 +40,7 @@ class PoeditorRepository {
     }
 
     public function getFilename($locale) {
-        return $this->config['source_dir'] . $locale . '/LC_MESSAGES/messages.po';
+        return config('laravel-poeditor.source_dir') . $locale . '/LC_MESSAGES/messages.po';
     }
 
     /**
@@ -66,13 +66,12 @@ class PoeditorRepository {
             'headers' => [],
             'strings' => [],
         ];
+
         if (file_exists($file)) {
             $handle = fopen($file, 'r');
             if ($handle) {
                 // Get Headers
-                $headers = $this->getHeaders($handle);
-
-                $data['headers'] = $headers;
+                $data['headers'] = $this->getHeaders($handle);
 
                 while(($line = fgets($handle)) !== false) {
                     $data['strings'][] = $this->getStrings($line, $handle);

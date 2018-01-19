@@ -22,6 +22,10 @@ class PoeditorProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/js' => public_path('js/vendor/hollanboLaravelPoeditor'),
         ], 'public');
+
+        $this->publishes([
+        __DIR__.'/config.php' => config_path('laravel-poeditor.php'),
+    ]);
     }
 
     /**
@@ -33,5 +37,9 @@ class PoeditorProvider extends ServiceProvider
     {
         include __DIR__.'/routes.php';
         $this->app->make('hollanbo\LaravelPoeditor\PoeditorController');
+
+        $this->mergeConfigFrom(
+            __DIR__.'/config.php', 'laravel-poeditor'
+        );
     }
 }

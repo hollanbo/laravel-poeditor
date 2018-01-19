@@ -87,7 +87,7 @@
             }
 
             tr:nth-child(odd) {
-                background: grey;
+                background: lightgrey;
             }
 
             td > input {
