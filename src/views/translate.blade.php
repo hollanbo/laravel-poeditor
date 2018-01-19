@@ -13,4 +13,12 @@
             @endif
         </tr>
     @endforeach
+    <tr>
+        <td></td>
+
+        <td>
+            <button class="poeditor-save-to-file-button">Save</button>
+            <button class="poeditor-publish-translations hidden">Publish</button>
+        </td>
+    </tr>
 </table>

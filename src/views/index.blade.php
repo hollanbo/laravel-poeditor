@@ -99,6 +99,10 @@
                 margin-bottom: 0;
             }
 
+            .hidden {
+                display: none;
+            }
+
         </style>
     </head>
     <body>

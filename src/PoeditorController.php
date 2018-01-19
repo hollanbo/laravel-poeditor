@@ -17,7 +17,8 @@ class PoeditorController extends Controller
         return view('hollanboLaravelPoeditor::index', $data);
     }
 
-    public function saveTranslation(Request $request, PoeditorRepository $repo) {
+    public function saveTranslation(Request $request, PoeditorRepository $repo)
+    {
         $data = $request->all();
 
         $response = $repo->saveTranslation("sl_SI", $data['key'], $data['value'], $data['plural']);
@@ -28,8 +29,15 @@ class PoeditorController extends Controller
         return response()->json($response);
     }
 
-    public function saveToFile(PoeditorRepository $repo) {
+    public function saveToFile(PoeditorRepository $repo)
+    {
         $repo->saveToFile("sl_SI");
-        return redirect()->route('hollanbo.poeditor.index');
+        return response()->json(['status' => 'ok']);
+    }
+
+    public function publish()
+    {
+        // TODO
+        return response()->json(['status' => 'ok']);
     }
 }
