@@ -4,13 +4,18 @@ namespace hollanbo\LaravelPoeditor;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use hollanbo\LaravelPoeditor\BaseDriver;
+use Xinax\LaravelGettext\LaravelGettext;
 
 class PoeditorController extends Controller
 {
-
     public function index(PoeditorRepository $repo, PluralsRepository $plurals)
     {
+
         $locale = "sl_SI";
+        setlocale(LC_ALL, $locale);
+        bindtextdomain('messages', config('laravel-poeditor.source_dir'));
+
         $data = $repo->getData($locale);
         $data['forms'] = $plurals->getForLocale($locale);
 
@@ -37,7 +42,18 @@ class PoeditorController extends Controller
 
     public function publish()
     {
-        // TODO
+        $driver = app()->make('hollanbo\LaravelPoeditor\BaseDriver')->determineDriver();
+
+        $driver->poToMo('sl_SI');
         return response()->json(['status' => 'ok']);
+    }
+
+    public function syncTranslations ()
+    {
+       $driver = app()->make('hollanbo\LaravelPoeditor\BaseDriver')->determineDriver();
+
+       $driver->sync();
+
+       return response()->json(['status' => 'ok']);
     }
 }
