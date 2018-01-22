@@ -37,9 +37,9 @@ return [
      * Should I create a backup for your files before changing them?
      * This applies to publishing, scanning and saving translation
      */
-    'backup_scan' => true,
-    'backup_save' => true,
-    'backup_publish' => true,
+    'backup_scan' => false,
+    'backup_save' => false,
+    'backup_publish' => false,
 
     'folders_to_scan' => [
         'app',
@@ -52,5 +52,8 @@ return [
 
     'domain' => 'messages',
 
-    'package_name' => 'Laravel PoEditor',
+    'project_name' => 'Laravel PoEditor',
+
+    'translator' => 'Laravel PoEditor Translator',
+    'language_team' => 'Laravel PoEditor Translator Team',
 ];

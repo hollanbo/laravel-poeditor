@@ -25,22 +25,14 @@ class PoeditorRepository {
      *
      * @version 1.0
      */
-    public function __construct()
+    public function __construct(PluralsRepository $plurals)
     {
-        $this->config = [
-            'source_dir' => resource_path('lang/i18n/'),
-
-            'supported_locales' => [
-                'en_GB',
-                'sl_SI'
-            ],
-
-            'default_locale' => 'en_GB'
-        ];
+        $this->plurals = $plurals;
     }
 
     public function getFilename($locale) {
-        return config('laravel-poeditor.source_dir') . $locale . '/LC_MESSAGES/messages.po';
+        $domain = config('laravel-poeditor.domain');
+        return config('laravel-poeditor.source_dir') . $locale . '/LC_MESSAGES/' . $domain . '.po';
     }
 
     /**
@@ -52,11 +44,11 @@ class PoeditorRepository {
      *
      * @version 1.0
      */
-    public function getData($locale)
+    public function getData($locale, $cache = true)
     {
         $key = $locale . "_translations";
 
-        if (Cache::has($key)) {
+        if ($cache && Cache::has($key)) {
             return Cache::get($key);
         }
 
@@ -217,30 +209,48 @@ class PoeditorRepository {
         return ['status' => 'ok'];
     }
 
-    public function saveToFile($locale)
+    public function saveToFile($locale, $backup = true, $custom_headers = false)
     {
         $existing_file = $this->getFilename($locale);
 
-        $this->createBackup($existing_file);
+        if ($backup) {
+            $this->createBackup($existing_file);
+        } else {
+            if (file_exists($existing_file)) {
+                unlink($existing_file);
+            }
+        }
 
-        $this->writeToFile($existing_file, $locale);
+        $this->writeToFile($existing_file, $locale, $custom_headers);
     }
 
     public function createBackup($filename)
     {
+        if (!file_exists($filename)) {
+            return false;
+        }
         $backup_filename = $filename . "_" . date('Y-m-d-H-i-s') . ".backup";
-        rename($filename, $backup_filename);
+        return rename($filename, $backup_filename);
     }
 
-    public function writeToFile($filename, $locale)
+    public function writeToFile($filename, $locale, $custom_headers = false)
     {
         $data = Cache::get($locale . '_translations');
-        $this->writeHeaders($filename, $data['headers']);
+        if ($custom_headers) {
+            $headers = $this->customHeaders($locale);
+        } else {
+            $headers = $data['headers'];
+        }
+        $this->writeHeaders($filename, $headers);
         $this->writeStrings($filename, $data['strings']);
     }
 
     public function writeHeaders($filename, $headers)
     {
+        if (empty($headers)) {
+            return;
+        }
+
         foreach ($headers as $header => $line) {
             if (!is_numeric($header)) {
                 // If the key is not numeric, it means it's a valid header.
@@ -255,7 +265,12 @@ class PoeditorRepository {
 
     public function writeStrings($filename, $strings_array)
     {
+        if (empty($strings_array)) {
+            return;
+        }
+
         $types = array_flip($this->types);
+
         foreach ($strings_array as $string_data) {
             file_put_contents($filename, "\n", FILE_APPEND);
 
@@ -277,5 +292,32 @@ class PoeditorRepository {
     public function getMsgStrings($string)
     {
         return '"' . $string . "\"\n";
+    }
+
+    public function customHeaders($locale) {
+        $plurals = $this->plurals->getForLocale($locale);
+
+        $plurals_value = substr($plurals['header'], 14, strlen($plurals['header']) - 16);
+
+        $headers = [
+            '# ' . config('laravel-poeditor.project_name'),
+            '# Laravel PoEditor',
+            'msgid ""',
+            'msgstr ""',
+
+            'Project-Id-Version' => config('laravel-poeditor.project_name'),
+            'POT-Creation-Date' => date('Y-m-d H:iO'),
+            'PO-Revision-Date' => date('Y-m-d H:iO'),
+            'Last-Translator' => config('laravel-poeditor.translator'),
+            'Language-Team' => config('laravel-poeditor.language_team'),
+            'Language' => $locale,
+            'Plural-Forms' => $plurals_value,
+            'MIME-Version' => '1.0',
+            'Content-Type' => 'text/plain; charset=UTF-8',
+            'Content-Transfer-Encoding' => '8bit',
+            'X-Generator' => 'Laravel PoEditor'
+        ];
+
+        return $headers;
     }
 }

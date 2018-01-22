@@ -11,7 +11,6 @@ class PoeditorController extends Controller
 {
     public function index(PoeditorRepository $repo, PluralsRepository $plurals)
     {
-
         $locale = "sl_SI";
         setlocale(LC_ALL, $locale);
         bindtextdomain('messages', config('laravel-poeditor.source_dir'));
@@ -25,8 +24,9 @@ class PoeditorController extends Controller
     public function saveTranslation(Request $request, PoeditorRepository $repo)
     {
         $data = $request->all();
+        $locale = "sl_SI";
 
-        $response = $repo->saveTranslation("sl_SI", $data['key'], $data['value'], $data['plural']);
+        $response = $repo->saveTranslation($locale, $data['key'], $data['value'], $data['plural']);
 
         if ($response['status'] === 'error') {
             return response()->json($response, 500);
@@ -36,15 +36,17 @@ class PoeditorController extends Controller
 
     public function saveToFile(PoeditorRepository $repo)
     {
-        $repo->saveToFile("sl_SI");
+        $locale = "sl_SI";
+        $backup = config('laravel-poeditor.backup_save');
+        $repo->saveToFile($locale, $backup);
         return response()->json(['status' => 'ok']);
     }
 
     public function publish()
     {
+        $locale = "sl_SI";
         $driver = app()->make('hollanbo\LaravelPoeditor\BaseDriver')->determineDriver();
-
-        $driver->poToMo('sl_SI');
+        $driver->poToMo($locale);
         return response()->json(['status' => 'ok']);
     }
 

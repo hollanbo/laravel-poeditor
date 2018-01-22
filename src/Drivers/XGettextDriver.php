@@ -2,20 +2,19 @@
 namespace hollanbo\LaravelPoeditor;
 
 
-class XGettextDriver extends BaseDriver{
+class XGettextDriver extends BaseDriver {
 
     public function poToMo ($locale)
     {
-        $path = config('laravel-poeditor.source_dir') . $locale . '/LC_MESSAGES/';
-
-        exec('msgfmt ' . $path . 'messages.po -o ' . $path . 'messages.mo');
+        if (config('laravel-poeditor.backup_publish')) {
+            $this->backupMoFile($locale);
+        }
+        exec('msgfmt ' . $this->getPoFile($locale) . ' -o ' . $this->getMoFile($locale));
     }
 
     public function moToPo ($locale)
     {
-        $path = config('laravel-poeditor.source_dir') . $locale . '/LC_MESSAGES/';
-
-        exec('msgunfmt ' . $path . 'messages.mo -o ' . $path . 'messages1.po');
+        exec('msgunfmt ' . $this->getMoFile($locale) . ' -o ' . $this->getPoFile($locale));
     }
 
     public function sync ()
@@ -24,13 +23,23 @@ class XGettextDriver extends BaseDriver{
 
         $commands = $this->buildCommands($files);
 
-        dd($commands[0]);
+        /**
+         * TODO: Backups
+         */
+
+        foreach ($commands as $locale => $command) {
+            if (config('laravel-poeditor.backup_scan')) {
+                $this->backupPoFile($locale);
+            }
+            $this->runCommand($command, $locale);
+            $this->saveFiles($locale);
+        }
     }
 
     public function buildCommands($files)
     {
         $domain = config('laravel-poeditor.domain');
-        $package_name = config('laravel-poeditor.package_name');
+        $package_name = 'Laravel PoEditor';
         $command = "xgettext --join-existing ";
         $command .= "--default-domain=$domain ";
         $command .= "--package-name=\"$package_name\" ";
@@ -38,9 +47,8 @@ class XGettextDriver extends BaseDriver{
 
         $commands = [];
         foreach (config('laravel-poeditor.supported_locales') as $locale) {
-            $path = config('laravel-poeditor.source_dir') . $locale . '/LC_MESSAGES/';
 
-            $commands[] = $command . " --output-dir=" . $path;
+            $commands[$locale] = $command . " --output-dir=" . $this->getFilePath($locale);
         }
 
         return $commands;

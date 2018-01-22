@@ -25,7 +25,10 @@ class PoeditorProvider extends ServiceProvider
 
         $this->publishes([
         __DIR__.'/config.php' => config_path('laravel-poeditor.php'),
-    ]);
+
+        ]);
+
+        $this->ensurePaths();
     }
 
     /**
@@ -41,5 +44,19 @@ class PoeditorProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/config.php', 'laravel-poeditor'
         );
+    }
+
+    public function ensurePaths() {
+        $path = config('laravel-poeditor.source_dir');
+
+        $locales = config('laravel-poeditor.supported_locales');
+
+        foreach ($locales as $locale) {
+            $full_path = $path . $locale . '/LC_MESSAGES/';
+
+            if (!file_exists($full_path)) {
+                mkdir($full_path, 0777, true);
+            }
+        }
     }
 }
