@@ -9,22 +9,47 @@ use Xinax\LaravelGettext\LaravelGettext;
 
 class PoeditorController extends Controller
 {
-    public function index(PoeditorRepository $repo, PluralsRepository $plurals)
+    /**
+     * Editor page
+     *
+     * @param   PoeditorRepository $repo    DEPENDENCY
+     * @param   PluralsRepository  $plurals INJECTION
+     *
+     * @return  View
+     *
+     * @author Borut Hollan <borut.hollan@easistent.com>
+     *
+     * @version 1.0
+     */
+    public function index(PoeditorRepository $repo, PluralsRepository $plurals, $locale)
     {
-        $locale = "sl_SI";
         setlocale(LC_ALL, $locale);
         bindtextdomain('messages', config('laravel-poeditor.source_dir'));
 
         $data = $repo->getData($locale);
         $data['forms'] = $plurals->getForLocale($locale);
+        $data['locale'] = $locale;
 
         return view('hollanboLaravelPoeditor::index', $data);
     }
 
-    public function saveTranslation(Request $request, PoeditorRepository $repo)
+    /**
+     * Save translation to cache endpoint
+     * (automatic Ajax)
+     *
+     * @param   Request            $request DEPENDENCY
+     * @param   PoeditorRepository $repo    INJECTION
+     *
+     * @return  JSON Response
+     *
+     * @author Borut Hollan <borut.hollan@easistent.com>
+     *
+     * @version 1.0
+     */
+    public function saveTranslation(Request $request, PoeditorRepository $repo, $locale)
     {
+
         $data = $request->all();
-        $locale = "sl_SI";
 
         $response = $repo->saveTranslation($locale, $data['key'], $data['value'], $data['plural']);
 
@@ -34,28 +59,58 @@ class PoeditorController extends Controller
         return response()->json($response);
     }
 
-    public function saveToFile(PoeditorRepository $repo)
+    /**
+     * Save translation to file endpoint
+     * (Save button clicked)
+     *
+     * @param   PoeditorRepository $repo Dependency injection
+     *
+     * @return  JSON Response
+     *
+     * @author Borut Hollan <borut.hollan@easistent.com>
+     *
+     * @version 1.0
+     */
+    public function saveToFile(PoeditorRepository $repo, $locale)
     {
-        $locale = "sl_SI";
+
         $backup = config('laravel-poeditor.backup_save');
         $repo->saveToFile($locale, $backup);
         return response()->json(['status' => 'ok']);
     }
 
-    public function publish()
+    /**
+     * Publish translations endpoint
+     * (Publish button clicked)
+     *
+     * @return  JSON Response
+     *
+     * @author Borut Hollan <borut.hollan@easistent.com>
+     *
+     * @version 1.0
+     */
+    public function publish(\hollanbo\LaravelPoeditor\BaseDriver $base_driver, $locale)
     {
-        $locale = "sl_SI";
-        $driver = app()->make('hollanbo\LaravelPoeditor\BaseDriver')->determineDriver();
+        $driver = $base_driver->determineDriver();
         $driver->poToMo($locale);
         return response()->json(['status' => 'ok']);
     }
 
-    public function syncTranslations ()
+    /**
+     * Sync po files with new strings from sources
+     *
+     * @return  JSON Response
+     *
+     * @author Borut Hollan <borut.hollan@easistent.com>
+     *
+     * @version 1.0
+     */
+    public function syncTranslations(\hollanbo\LaravelPoeditor\BaseDriver $base_driver, $locale)
     {
-       $driver = app()->make('hollanbo\LaravelPoeditor\BaseDriver')->determineDriver();
 
+       $driver = $base_driver->determineDriver();
        $driver->sync();
 
-       return response()->json(['status' => 'ok']);
+       return redirect()->route('hollanbo.poeditor.index', ['locale' => $locale]);
     }
 }

@@ -1,10 +1,13 @@
 (function () {
     var url = "/hollanbo/poeditor";
+    var locale;
     var bind = function () {
         $('#poeditor-translation-table')
             .on('change', 'input.poeditor-translation', saveTranslation)
             .on('click', 'button.poeditor-save-to-file-button', saveToFile)
             .on('click', 'button.poeditor-publish-translations', publish);
+
+        locale = $('html').attr('lang');
     };
 
     var saveTranslation = function (e) {
@@ -17,7 +20,7 @@
         $.ajax({
             cache: false,
             type: 'POST',
-            url: url + '/save',
+            url: url + '/save/' + locale,
             timeout: 10000,
             dataType: 'json',
             data: data
@@ -32,7 +35,7 @@
         $.ajax({
             cache: false,
             type: 'PUT',
-            url: url + '/save',
+            url: url + '/save/' + locale,
             timeout: 10000,
             dataType: 'json'
         }).done(function(rsp) {
@@ -46,7 +49,7 @@
         $.ajax({
             cache: false,
             type: 'PUT',
-            url: url + '/publish',
+            url: url + '/publish/' + locale,
             timeout: 10000,
             dataType: 'json'
         }).done(function(rsp) {

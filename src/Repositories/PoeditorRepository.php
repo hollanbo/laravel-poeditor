@@ -30,6 +30,17 @@ class PoeditorRepository {
         $this->plurals = $plurals;
     }
 
+    /**
+     * Returns full path to .po file based on supplied locale
+     *
+     * @param   String $locale Locale string (en_GB)
+     *
+     * @return  String filename
+     *
+     * @author Borut Hollan <borut.hollan@easistent.com>
+     *
+     * @version 1.0
+     */
     public function getFilename($locale) {
         $domain = config('laravel-poeditor.domain');
         return config('laravel-poeditor.source_dir') . $locale . '/LC_MESSAGES/' . $domain . '.po';
@@ -48,9 +59,9 @@ class PoeditorRepository {
     {
         $key = $locale . "_translations";
 
-        if ($cache && Cache::has($key)) {
+        /*if ($cache && Cache::has($key)) {
             return Cache::get($key);
-        }
+        }*/
 
         $file = $this->getFilename($locale);
 

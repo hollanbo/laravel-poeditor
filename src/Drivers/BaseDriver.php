@@ -23,8 +23,6 @@ class BaseDriver {
     public function getAllFilepaths ()
     {
         $folders = config('laravel-poeditor.folders_to_scan');
-
-
         $files = [];
 
         foreach ($folders as $folder) {
@@ -39,7 +37,17 @@ class BaseDriver {
             }
         }
 
+        $files = $this->compileBlade($files);
+
         return $files;
+    }
+
+    public function compileBlade(array $files) {
+        return app()->make('hollanbo\LaravelPoeditor\BladeCompiler')->compile($files);
+    }
+
+    public function clearTmpFolder() {
+        return app()->make('hollanbo\LaravelPoeditor\BladeCompiler')->clearFolder();
     }
 
     public function saveFiles ($locale)
@@ -93,5 +101,6 @@ class BaseDriver {
         }
 
         exec($command);
+
     }
 }

@@ -23,10 +23,6 @@ class XGettextDriver extends BaseDriver {
 
         $commands = $this->buildCommands($files);
 
-        /**
-         * TODO: Backups
-         */
-
         foreach ($commands as $locale => $command) {
             if (config('laravel-poeditor.backup_scan')) {
                 $this->backupPoFile($locale);
@@ -34,6 +30,8 @@ class XGettextDriver extends BaseDriver {
             $this->runCommand($command, $locale);
             $this->saveFiles($locale);
         }
+
+        $this->clearTmpFolder();
     }
 
     public function buildCommands($files)
@@ -43,11 +41,18 @@ class XGettextDriver extends BaseDriver {
         $command = "xgettext --join-existing ";
         $command .= "--default-domain=$domain ";
         $command .= "--package-name=\"$package_name\" ";
+
+        foreach (config('laravel-poeditor.extra_keywords') as $keyword) {
+            $command .= '--keyword="' . $keyword . '" ';
+        }
+
+        if (!config('laravel-poeditor.location_header')) {
+            $command .= '--no-location ';
+        }
         $command .= implode(' ', $files);
 
         $commands = [];
         foreach (config('laravel-poeditor.supported_locales') as $locale) {
-
             $commands[$locale] = $command . " --output-dir=" . $this->getFilePath($locale);
         }
 

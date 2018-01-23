@@ -56,4 +56,11 @@ return [
 
     'translator' => 'Laravel PoEditor Translator',
     'language_team' => 'Laravel PoEditor Translator Team',
+
+    'extra_keywords' => [
+        'pgettext:1c,2',
+        '_c:1c,2'
+    ],
+
+    'location_header' => false,
 ];
