@@ -16,7 +16,7 @@ class PoeditorProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/views', 'hollanboLaravelPoeditor');
 
         $this->publishes([
-            __DIR__.'/views' => resource_path('views/vendor/hollanboLaravelPoeditor'),
+            __DIR__.'/views' => resource_path('views/vendor/hollanbo/LaravelPoeditor'),
         ]);
 
         $this->publishes([
