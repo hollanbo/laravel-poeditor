@@ -70,6 +70,7 @@
 
             table {
                 width: 100%;
+                margin-bottom: 75px;
             }
 
             td {
@@ -101,6 +102,20 @@
 
             .hidden {
                 display: none;
+            }
+
+            .poeditor-controls {
+                width: 100%;
+                text-align: center;
+                position: fixed;
+                bottom: 0;
+                background-color: #9bafc1;
+                padding: 16px;
+            }
+
+            .poeditor-controls .poeditor-sync {
+                float: right;
+                margin-right: 50px;
             }
 
         </style>

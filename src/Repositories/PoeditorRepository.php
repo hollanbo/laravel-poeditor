@@ -87,6 +87,18 @@ class PoeditorRepository {
 
         Cache::put($key, $data, 600);
 
+        uasort($data['strings'], function ($a,$b) {
+            if ($a['original'] == $b['original']) {
+                return 0;
+            }
+            return $a['original'] < $b['original'] ? -1 : 1;
+        });
+
+        uasort($data['strings'], function ($a,$b) {
+            $untranslated = empty($a['translation']) && empty($a['msgstr[0]']);
+            return $untranslated ? -1 : 1;
+        });
+
         return $data;
 
     }
@@ -215,6 +227,7 @@ class PoeditorRepository {
             $msgstr = "msgstr[$plural]";
             $data['strings'][$key][$msgstr] = $translation;
         }
+
         Cache::put($cache_key, $data, 600);
 
         return ['status' => 'ok'];
@@ -252,6 +265,7 @@ class PoeditorRepository {
         } else {
             $headers = $data['headers'];
         }
+
         $this->writeHeaders($filename, $headers);
         $this->writeStrings($filename, $data['strings']);
     }

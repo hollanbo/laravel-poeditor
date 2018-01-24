@@ -2,10 +2,14 @@
     var url = "/hollanbo/poeditor";
     var locale;
     var bind = function () {
+        console.log('ok');
         $('#poeditor-translation-table')
-            .on('change', 'input.poeditor-translation', saveTranslation)
+            .on('change', 'input.poeditor-translation', saveTranslation);
+
+        $('.poeditor-controls')
             .on('click', 'button.poeditor-save-to-file-button', saveToFile)
             .on('click', 'button.poeditor-publish-translations', publish);
+
 
         locale = $('html').attr('lang');
     };
@@ -46,6 +50,7 @@
     };
 
     var publish = function (e) {
+        console.log('okasdfasdf');
         $.ajax({
             cache: false,
             type: 'PUT',
