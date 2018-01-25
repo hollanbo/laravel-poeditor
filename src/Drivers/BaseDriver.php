@@ -82,7 +82,7 @@ class BaseDriver {
 
     public function getMoFile ($locale) {
         $domain = config('laravel-poeditor.domain');
-        return $this->getFilePath($locale) . $domain . '.po';
+        return $this->getFilePath($locale) . $domain . '.mo';
     }
 
     public function getFilePath ($locale) {

@@ -23,9 +23,6 @@ class PoeditorController extends Controller
      */
     public function index(PoeditorRepository $repo, PluralsRepository $plurals, $locale)
     {
-        setlocale(LC_ALL, $locale);
-        bindtextdomain('messages', config('laravel-poeditor.source_dir'));
-
         $data = $repo->getData($locale);
         $data['forms'] = $plurals->getForLocale($locale);
         $data['locale'] = $locale;
@@ -93,6 +90,10 @@ class PoeditorController extends Controller
     {
         $driver = $base_driver->determineDriver();
         $driver->poToMo($locale);
+
+        bindtextdomain('messages12341234', config('laravel-poeditor.source_dir'));
+        bindtextdomain(config('laravel-poeditor.domain'), config('laravel-poeditor.source_dir'));
+
         return response()->json(['status' => 'ok']);
     }
 

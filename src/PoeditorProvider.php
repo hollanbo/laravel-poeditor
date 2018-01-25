@@ -20,7 +20,7 @@ class PoeditorProvider extends ServiceProvider
         ]);
 
         $this->publishes([
-            __DIR__.'/js' => public_path('js/vendor/hollanboLaravelPoeditor'),
+            __DIR__.'/js' => public_path('js/vendor/hollanbo/LaravelPoeditor'),
         ], 'public');
 
         $this->publishes([

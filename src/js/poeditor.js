@@ -2,7 +2,6 @@
     var url = "/hollanbo/poeditor";
     var locale;
     var bind = function () {
-        console.log('ok');
         $('#poeditor-translation-table')
             .on('change', 'input.poeditor-translation', saveTranslation);
 
@@ -29,7 +28,6 @@
             dataType: 'json',
             data: data
         }).done(function(rsp) {
-            console.log(rsp);
         }).always(function(rsp) {
         }).fail(function(rsp) {
         });
@@ -43,7 +41,7 @@
             timeout: 10000,
             dataType: 'json'
         }).done(function(rsp) {
-            $('#poeditor-translation-table .poeditor-publish-translations').removeClass('hidden');
+            $('.poeditor-controls .poeditor-publish-translations').removeClass('hidden');
         }).always(function(rsp) {
         }).fail(function(rsp) {
         });
@@ -58,7 +56,6 @@
             timeout: 10000,
             dataType: 'json'
         }).done(function(rsp) {
-            console.log(rsp);
         }).always(function(rsp) {
         }).fail(function(rsp) {
         });

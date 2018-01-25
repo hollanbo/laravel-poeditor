@@ -221,7 +221,7 @@ class PoeditorRepository {
 
         $data = Cache::get($cache_key);
 
-        if (is_null($plural)) {
+        if (empty($plural)) {
             $data['strings'][$key]['translation'] = $translation;
         } else {
             $msgstr = "msgstr[$plural]";
