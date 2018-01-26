@@ -124,6 +124,6 @@
         <div>
             @include('hollanboLaravelPoeditor::translate')
         </div>
-    <script src="/js/vendor/hollanboLaravelPoeditor/poeditor.js"></script>
+    <script src="/js/vendor/hollanbo/LaravelPoeditor/poeditor.js"></script>
     </body>
 </html>
