@@ -122,7 +122,7 @@
     </head>
     <body>
         <div>
-            @include('hollanboLaravelPoeditor::translate')
+            @include('hollanbo/LaravelPoeditor::translate')
         </div>
     <script src="/js/vendor/hollanbo/LaravelPoeditor/poeditor.js"></script>
     </body>
