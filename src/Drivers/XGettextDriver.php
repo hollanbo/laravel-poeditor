@@ -32,6 +32,7 @@ class XGettextDriver extends BaseDriver {
         }
 
         $this->clearTmpFolder();
+        clearstatcache();
     }
 
     public function buildCommands($files)

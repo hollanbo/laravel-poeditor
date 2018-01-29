@@ -7,9 +7,9 @@
     @foreach ($strings as $key => $string)
         <tr>
             @if (isset($string['original_plural']))
-                @include('hollanboLaravelPoeditor::plural')
+                @include('hollanbo/LaravelPoeditor::plural')
             @else
-                @include('hollanboLaravelPoeditor::singular')
+                @include('hollanbo/LaravelPoeditor::singular')
             @endif
         </tr>
     @endforeach

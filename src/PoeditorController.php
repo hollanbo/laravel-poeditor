@@ -27,7 +27,7 @@ class PoeditorController extends Controller
         $data['forms'] = $plurals->getForLocale($locale);
         $data['locale'] = $locale;
 
-        return view('hollanboLaravelPoeditor::index', $data);
+        return view('hollanbo/LaravelPoeditor::index', $data);
     }
 
     /**

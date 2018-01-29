@@ -48,7 +48,6 @@
     };
 
     var publish = function (e) {
-        console.log('okasdfasdf');
         $.ajax({
             cache: false,
             type: 'PUT',
