@@ -17,16 +17,16 @@ class PoeditorProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/views' => resource_path('views/vendor/hollanbo/LaravelPoeditor'),
-        ]);
+        ], 'views');
 
         $this->publishes([
             __DIR__.'/js' => public_path('js/vendor/hollanbo/LaravelPoeditor'),
-        ], 'public');
+        ], 'scripts');
 
         $this->publishes([
         __DIR__.'/config.php' => config_path('laravel-poeditor.php'),
 
-        ]);
+        ], 'config');
 
         $this->ensurePaths();
     }
